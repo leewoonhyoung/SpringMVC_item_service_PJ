@@ -6,17 +6,16 @@ import hello.itemservice.domain.item.ItemRepository;
 import hello.itemservice.domain.item.ItemType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+
 
 @Slf4j
 @Controller
@@ -45,8 +44,8 @@ public class BasicItemController {
     public List<DeliveryCode> deliveryCodes(){
         List<DeliveryCode> deliveryCodes = new ArrayList<>();
         deliveryCodes.add(new DeliveryCode("FAST", "빠른배송"));
-        deliveryCodes.add(new DeliveryCode("NORMAL", "빠른배송"));
-        deliveryCodes.add(new DeliveryCode("SLOW", "빠른배송"));
+        deliveryCodes.add(new DeliveryCode("NORMAL", "일반배송"));
+        deliveryCodes.add(new DeliveryCode("SLOW", "느린배송"));
 
         return deliveryCodes;
     }
@@ -72,7 +71,8 @@ public class BasicItemController {
     }
 
     @PostMapping("/add")
-    public String addItemV6(@ModelAttribute Item item, RedirectAttributes redirectAttributes) {
+    public String addItemV6(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
+        // 성공로직
         log.info("item.open={}", item.getOpen());
         log.info("item.regions={}", item.getRegions());
         log.info("item.itemType={}", item.getItemType());
@@ -82,6 +82,8 @@ public class BasicItemController {
         redirectAttributes.addAttribute("status", true);
         return "redirect:/message/items/{itemId}";
     }
+
+
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
