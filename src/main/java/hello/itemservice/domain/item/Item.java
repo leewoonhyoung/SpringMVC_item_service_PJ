@@ -14,9 +14,10 @@ import java.util.List;
 @Setter
 public class Item {
 
+    @NotNull
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "공백은 입력할 수 없습니다.")
     private String itemName;
 
     @NotNull
@@ -24,7 +25,6 @@ public class Item {
     private Integer price; // price 가 null 일 가능성이 존재한다.
 
     @NotNull
-    @Max(9999)
     private Integer quantity;
 
     private Boolean open; // 판매여부
