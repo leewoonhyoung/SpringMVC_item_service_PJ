@@ -4,12 +4,18 @@ import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.springframework.aop.config.AbstractInterceptorDrivenBeanDefinitionDecorator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,7 +29,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ValidationItemControllerV2 {
 
+
     private final ItemRepository itemRepository;
+    private final ItemValidator itemValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder){
+        log.info("init binder={}", dataBinder);
+        dataBinder.addValidators(itemValidator);
+    }
+
 
     @GetMapping
     public String items(Model model) {
@@ -137,37 +152,71 @@ public class ValidationItemControllerV2 {
 //        redirectAttributes.addAttribute("status", true);
 //        return "redirect:/validation/v2/items/{itemId}";
 //    }
+
+//    @PostMapping("/add")
+//    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+//        log.info("objectName = {}", bindingResult.getObjectName());
+//        log.info("target = {}", bindingResult.getTarget());
+//
+////        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
+//
+//        if(!StringUtils.hasText(item.getItemName())){
+//            bindingResult.rejectValue("itemName", "required");
+//        }
+//
+//        if(item.getPrice() == null || item.getPrice()< 1000 || item.getPrice() > 1000000){
+//            bindingResult.rejectValue("price", "range", new Object[]{1000, 1000000}, null);
+//        }
+//        if(item.getQuantity() == null || item.getQuantity() >10000){
+//            bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
+//        }
+//
+//        if(item.getPrice() != null && item.getQuantity() != null){
+//            int resultPrice = item.getPrice() * item.getQuantity();
+//            if(resultPrice < 10000){
+//                bindingResult.reject("totalPriceMin" , new Object[]{10000, resultPrice}, null);
+//            }
+//        }
+//
+//        if(bindingResult.hasErrors()){
+//            log.info("errors={}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+//        Item savedItem = itemRepository.save(item);
+//        redirectAttributes.addAttribute("item", savedItem.getId());
+//        redirectAttributes.addAttribute("status", true);
+//        return "redirect:/validation/v2/items/{itemId}";
+//    }
+//    @PostMapping("/add")
+//    public String addItemV5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+//
+//        itemValidator.validate(item, bindingResult);
+//
+//        if (bindingResult.hasErrors()){
+//            log.info("errors={}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+//        Item savedItem = itemRepository.save(item);
+//        redirectAttributes.addAttribute("itemId", savedItem.getId());
+//        redirectAttributes.addAttribute("status", true);
+//        return "redirect:/validation/v2/items/{itemId}";
+//
+//    }
     @PostMapping("/add")
-    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-        log.info("objectName = {}", bindingResult.getObjectName());
-        log.info("target = {}", bindingResult.getTarget());
-
-        if(!StringUtils.hasText(item.getItemName())){
-            bindingResult.rejectValue("itemName", "required");
-        }
-        if(item.getPrice() == null || item.getPrice()< 1000 || item.getPrice() > 1000000){
-            bindingResult.rejectValue("price", "range", new Object[]{1000, 1000000}, null);
-        }
-        if(item.getQuantity() == null || item.getQuantity() >10000){
-            bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
-        }
-
-        if(item.getPrice() != null && item.getQuantity() != null){
-            int resultPrice = item.getPrice() * item.getQuantity();
-            if(resultPrice < 10000){
-                bindingResult.reject("totalPriceMin" , new Object[]{10000, resultPrice}, null);
-            }
-        }
-
+    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
-            log.info("errors={}", bindingResult);
+            log.info("errors = {}", bindingResult);
             return "validation/v2/addForm";
         }
+
         Item savedItem = itemRepository.save(item);
-        redirectAttributes.addAttribute("item", savedItem.getId());
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
+
+
+
 
 
     @GetMapping("/{itemId}/edit")
