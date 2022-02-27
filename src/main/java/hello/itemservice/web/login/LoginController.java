@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +71,7 @@ public class LoginController {
 
     }
 
-    @PostMapping("/login")
+   // @PostMapping("/login")
     public String loginV3(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult, HttpServletRequest request){
         if(bindingResult.hasErrors()){
             return "login/loginForm";
@@ -94,6 +91,31 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         return "redirect:/";
 
+    }
+
+    @PostMapping("/login")
+    public String loginV4(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult,
+                          @RequestParam(defaultValue = "/") String redirectURL,
+                          HttpServletRequest request){
+        if (bindingResult.hasErrors()) {
+        return "login/loginForm";
+        }
+
+        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
+        log.info("login?{}", loginMember);
+
+        if(loginMember == null){
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "login/loginForm";
+        }
+        //세션이 있으면 세션을 반환하고 없으면 신규 세션을 생성한다.
+        HttpSession session = request.getSession();
+
+        //세션에 로그인 회원 정보를 보관한다.
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+        //redirectURL 사용
+        return "redirect:" + redirectURL;
     }
 
 
