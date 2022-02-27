@@ -26,6 +26,7 @@ public class ItemController {
 
     @GetMapping
     public String items(Model model) {
+        //로그인 여부 check
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "items/items";
