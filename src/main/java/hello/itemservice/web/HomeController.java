@@ -2,6 +2,7 @@ package hello.itemservice.web;
 
 import hello.itemservice.domain.member.Member;
 import hello.itemservice.domain.member.MemberRepository;
+import hello.itemservice.web.argumentResolver.Login;
 import hello.itemservice.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +73,19 @@ public class HomeController {
     }
 
     //Spring이 제공하는 Session 찾기기
-   @GetMapping("/")
+//   @GetMapping("/")
     public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember , Model model){
 
+        if (loginMember == null){
+            return "home";
+        }
+
+        model.addAttribute("member", loginMember);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String homeLoginV3ArgumentResolver(@Login Member loginMember, Model model){
         if (loginMember == null){
             return "home";
         }
