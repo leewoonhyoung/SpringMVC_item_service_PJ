@@ -24,6 +24,8 @@ public class ItemValidator implements Validator {
             errors.rejectValue("itemName", "required");
         }
 
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemName", "required");
+
         if(item.getPrice() == null || item.getPrice()< 1000 || item.getPrice() > 1000000){
             errors.rejectValue("price", "range", new Object[]{1000, 1000000}, null);
         }
