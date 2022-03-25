@@ -76,6 +76,19 @@ public class HomeController {
 //   @GetMapping("/")
     public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember , Model model){
 
+        /**
+         *
+         * 다음 부분을 @SessionAttribute가  처리해준다.
+         *
+         *         HttpSession session = request.getSession(false);
+         *         if (session == null){
+         *             return null;
+         *         }
+         *
+         *         Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
+         *
+         */
+
         if (loginMember == null){
             return "home";
         }

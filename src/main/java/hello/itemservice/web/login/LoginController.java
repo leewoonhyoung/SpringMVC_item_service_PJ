@@ -86,8 +86,11 @@ public class LoginController {
         }
 
         //로그인 성공처리
+
         //세션이 있으면 있는 세션을 반환, 없으면 신규 세션을 생성
         HttpSession session = request.getSession();
+
+        //세션에 로그인 정보를 보관하는 방법이다. 하나의 세션의 여러 값을 저장할 수 있다.
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         return "redirect:/";
 

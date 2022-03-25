@@ -16,7 +16,7 @@ class SessionManagerTest {
         SessionManager sessionManager = new SessionManager();
 
         @Test
-    public void sessionTest(){
+         public void sessionTest(){
 
             //세션 생성
             MockHttpServletResponse response = new MockHttpServletResponse();
