@@ -128,6 +128,12 @@ public class LoginController {
 
     private final LoginService loginService;
 
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("loginForm") LoginForm loginForm){
+        return "login/loginForm";
+    }
+
+
     @PostMapping("/login")
     public String loginV3(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
@@ -149,9 +155,21 @@ public class LoginController {
         //세션에 로그인 회원의 정보를 보관한다.
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         return "redirect:/";
-
-
     }
+
+    @PostMapping("/logout")
+    public String logoutV3(HttpServletRequest request){
+
+        //세션을 삭제한다.
+        HttpSession session = request.getSession(false);
+        if (session != null){
+            session.invalidate();
+        }
+        return "redirect:/";
+    }
+
+
+
 }
 
 
@@ -292,4 +310,4 @@ public class LoginController {
     }
 **/
 
-}
+
