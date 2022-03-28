@@ -40,6 +40,8 @@ public class MemberRepository {
 //        }
 //        return Optional.empty();
 //    }
+
+
     public Optional<Member> findByLoginId(String loginId){
         return findAll().stream()
                 .filter(m -> m.getLoginId().equals(loginId))

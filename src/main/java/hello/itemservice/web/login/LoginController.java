@@ -21,6 +21,39 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
 
+    //첫번째
+
+    private final LoginService loginService;
+
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("loginForm") LoginForm loginForm){
+        return "login/loginForm";
+    }
+
+
+    //@Valid는 loginForm 의 @NotNull과 같은 한정 어노테이션을 사용하겠다라는 의미!
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "login/loginForm";
+        }
+
+        Member loginMember = loginService.login(loginForm.getLoginId(), loginForm.getPassword());
+        log.info("login? {}", loginMember);
+
+        if(loginMember == null){
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "login/loginForm";
+        }
+
+        // 로그인 추가 처리(세션 쿠키 사용 예정)
+         return "redirect:/";
+    }
+
+
+
+
+    /**
     private final LoginService loginService;
     private final SessionManager sessionManager;
 
@@ -148,6 +181,6 @@ public class LoginController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
-
+**/
 
 }
