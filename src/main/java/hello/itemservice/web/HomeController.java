@@ -30,6 +30,7 @@ public class HomeController {
 //    }
 
 //    @GetMapping("/")
+    //required = false를 통해 로그인하지 않는 사용자도 홈에 접근할수 있게 해준다.
     public String homeLogin(@CookieValue(name = "memberId", required = false) Long memberId, Model model){
 
         if (memberId == null){
@@ -43,6 +44,7 @@ public class HomeController {
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
+
 //    @GetMapping("/")
     public String homeLoginV2(HttpServletRequest request, Model model){
         Member member = (Member)sessionManager.getSession(request);

@@ -67,7 +67,7 @@ public class SessionManager {
             return null;
         }
 
-        //request.getcookies() 를 하면 배열로 들어온다.
+        //request.getcookies()를  stream을 사용하면 배열로 들어온다.
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(cookieName))
                 .findAny()
