@@ -4,6 +4,7 @@ import hello.itemservice.web.argumentResolver.LoginMemberArgumentResolver;
 import hello.itemservice.web.filter.LogFilter;
 import hello.itemservice.web.filter.LoginCheckFilter;
 import hello.itemservice.web.interceptor.LogInterceptor;
+import hello.itemservice.web.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,11 @@ import javax.servlet.Filter;
 import java.util.List;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig implements  WebMvcConfigurer{
+
+    //implements WebMvcConfigurer
+
+
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -30,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
                .addPathPatterns("/**")
                .excludePathPatterns("/css/**", "/*", "/error");
 
-       registry.addInterceptor(new LogInterceptor())
+       registry.addInterceptor(new LoginCheckInterceptor())
                .order(2)
                .addPathPatterns("/**")
                .excludePathPatterns("/", "/members/add", "/login", "/logout",
@@ -38,24 +43,28 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
 
+    //    // 필터 전용 bean
+//    @Bean
+//    public FilterRegistrationBean logFilter(){
+//        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+//        filterRegistrationBean.setFilter(new LogFilter());
+//        filterRegistrationBean.setOrder(1);
+//        filterRegistrationBean.addUrlPatterns("/");
+//        return filterRegistrationBean;
+//    }
+//
+//    @Bean //로그인 되지 않은 사용자들은 다음 페이지로 이동하지 못하도록하는 Config
+//    public FilterRegistrationBean loginCheckFilter(){
+//        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+//        filterRegistrationBean.setFilter(new LoginCheckFilter());
+//        filterRegistrationBean.setOrder(2);
+//        filterRegistrationBean.addUrlPatterns("/");
+//        return filterRegistrationBean;
+//    }
 
-  //  @Bean
-    public FilterRegistrationBean logFilter(){
-        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new LogFilter());
-        filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/");
-        return filterRegistrationBean;
-    }
 
-  //  @Bean
-    public FilterRegistrationBean loginCheckFilter(){
-        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new LoginCheckFilter());
-        filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/");
-        return filterRegistrationBean;
-    }
+
+
 
 
 }
